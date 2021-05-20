@@ -3,7 +3,7 @@ import './styling/App.css';
 
 function App() {
   const [allTrucks, setAllTrucks] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState('Truck 1');
 
   useEffect(() => {
     showAllTrucks();
@@ -16,8 +16,18 @@ function App() {
   }
 
   const amountOfTrucks = allTrucks.length;
+  let filteredTrucks = [];
   let trucksOnRoute = 0;
   let trucksIdle = 0;
+
+  async function getFilteredTrucks() {
+    await allTrucks.map((truck) => {
+      if (truck.name.includes(input)) {
+        filteredTrucks.push(truck);
+      }
+    });
+  }
+  getFilteredTrucks();
 
   async function statusOnroute() {
     await allTrucks.forEach((truck) => {
@@ -37,27 +47,20 @@ function App() {
   }
   statusOnIdle();
 
-  const filteredTrucks = allTrucks.filter((truck) => {
-    truck.name.includes(input);
-  });
-
   return (
     <div className="App">
-      {/* Not quite finished with the filter function - does not work */}
       <label>Search for Truckname: </label>
       <input
         className="input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <div>{filteredTrucks}</div>
-      {/* <div>
-        {allTrucks
-          .filter((truck) => truck.name.includes(input))
-          .map((filteredTruck) => (
-            <li>{filteredTruck}</li>
-          ))}
-      </div> */}
+      <div>
+        {filteredTrucks.map((truck) => (
+          <p>{truck.name}</p>
+        ))}
+      </div>
+
       <div className="container">
         {allTrucks.map((truck) => (
           <div key={truck.id} className="trucks">
